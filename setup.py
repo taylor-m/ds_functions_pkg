@@ -8,6 +8,6 @@ setup(name='ds_functions_pkg',
       author='Taylor Martin',
       author_email='taymart@gmail.com',
       url='https://github.com/taylor-m/ds_functions_pkg',
-      packages=['ds_functions_pkg'],
+      packages=['functions_pkg'],
       license='MIT',
       )
