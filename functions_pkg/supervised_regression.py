@@ -10,6 +10,7 @@ from statsmodels.stats.outliers_influence import variance_inflation_factor
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import seaborn as sns
+import plotly.express as px
 
 
 # =======================================================================
@@ -168,6 +169,7 @@ def predictions_df(X_test, y_test, y_preds):
     :param X_test:
     :param y_test:
     :param y_preds: X_test predictions; model.predict(X_test)
+    :return pred_df, fig: returns predictions data frame and plotly express fig object
     """
 
     pred_df = X_test.copy()
@@ -177,4 +179,9 @@ def predictions_df(X_test, y_test, y_preds):
     pred_df["abs_residuals"] = pred_df.residuals.abs()
     pred_df = pred_df.sort_values("abs_residuals", ascending=False)
 
-    return pred_df
+    fig = px.scatter(data_frame=pred_df, x="y_true", y="y_preds")
+    fig.add_shape(
+        type="line", x0=y_test.min(), y0=y_test.min(), x1=y_test.max(), y1=y_test.max()
+    )
+
+    return pred_df, fig
