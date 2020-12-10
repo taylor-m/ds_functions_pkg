@@ -3,7 +3,7 @@
 from setuptools import setup
 
 setup(name='ds_functions_pkg',
-      version='0.0.1',
+      version='0.2.0',
       description='useful data science functions',
       author='Taylor Martin',
       author_email='taymart@gmail.com',
