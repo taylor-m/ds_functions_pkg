@@ -45,7 +45,7 @@ def plot_sced_test(df, target, features):
         plt.scatter(X_train, y_train, alpha=0.1)
         plt.plot(X_train, y_pred, c="red")
         plt.xlabel(var)
-        plt.ylabel("Temperature")
+        plt.ylabel(target)
         plt.show()
 
         lm_results.summary()
@@ -92,21 +92,8 @@ def plot_top_corrs(df, column, n=10):
     plt.show()
 
 
-# =======================================================================
-# LINEAR REGRESSION PERFORMANCE DF
-# =======================================================================
-# pred_df = X_test.copy()
-# pred_df["y_true"] = y_test
-# pred_df["y_pred"] = y_pred
-# pred_df["resid"] = pred_df["y_pred"] - pred_df["y_true"]
-# pred_df["abs_resid"] = pred_df["resid"].abs()
-# pred_df = pred_df.sort_values("abs_resid", ascending=False)
-# pred_df.head()
-# TODO find linear regression performance df info and convert to function
-
 # =======================================================================,
-# TUKEY'S METHOD - OUTLIERS
-# (EDA)
+# TUKEY'S METHOD - OUTLIERS (EDA)
 # =======================================================================,
 
 def tukey_outliers(df, var):
@@ -131,24 +118,24 @@ def tukey_outliers(df, var):
 # (model performance)
 # =======================================================================
 
-def print_vif(x):
+def print_vif(feature_df):
     """
     Utility for checking multicollinearity assumption
-    :param x: input features to check using VIF. This is assumed to be a pandas.DataFrame
+    :param feature_df: input features to check using VIF. This is assumed to be a pandas.DataFrame
     :return: nothing is returned the VIFs are printed as a pandas series
     """
     # Silence numpy FutureWarning about .ptp
     with warnings.catch_warnings():
         warnings.simplefilter('ignore')
-        x = sm.add_constant(x)
+        feature_df = sm.add_constant(feature_df)
 
     vifs = []
-    for i in range(x.shape[1]):
-        vif = variance_inflation_factor(x.values, i)
+    for i in range(feature_df.shape[1]):
+        vif = variance_inflation_factor(feature_df.values, i)
         vifs.append(vif)
 
     print('VIF results\n-------------------------------')
-    print(pd.Series(vifs, index=x.columns))
+    print(pd.Series(vifs, index=feature_df.columns))
     print('-------------------------------\n')
 
 # =======================================================================
@@ -160,6 +147,8 @@ def print_vif(x):
 # fig.add_shape(
 #     type="line", x0=y_test.min(), y0=y_test.min(), x1=y_test.max(), y1=y_test.max()
 # )
+# =======================================================================
+# LINEAR REGRESSION PERFORMANCE DF
 # =======================================================================
 
 def predictions_df(X_test, y_test, y_preds):
