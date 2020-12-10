@@ -1,4 +1,0 @@
-.idea
-build
-dist
-ds_functions_pkg.egg-info
