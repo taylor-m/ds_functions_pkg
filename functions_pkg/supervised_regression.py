@@ -175,6 +175,6 @@ def predictions_df(X_test, y_test, y_preds):
     pred_df["y_preds"] = y_preds
     pred_df["residuals"] = pred_df.y_preds - pred_df.y_true
     pred_df["abs_residuals"] = pred_df.residuals.abs()
-    pred_df = pred_df.sort_values("abs_residuals", ascending=True)
+    pred_df = pred_df.sort_values("abs_residuals", ascending=False)
 
     return pred_df
