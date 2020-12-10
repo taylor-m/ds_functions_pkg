@@ -159,3 +159,22 @@ def print_vif(x):
 # fig.add_shape(
 #     type="line", x0=y_test.min(), y0=y_test.min(), x1=y_test.max(), y1=y_test.max()
 # )
+# =======================================================================
+
+def predictions_df(X_test, y_test, y_preds):
+    """
+    Function to create a predictions dataframe from X_test, y_test, y_predictions input
+
+    :param X_test:
+    :param y_test:
+    :param y_preds: X_test predictions; model.predict(X_test)
+    """
+
+    pred_df = X_test.copy()
+    pred_df["y_true"] = y_test
+    pred_df["y_preds"] = y_preds
+    pred_df["residuals"] = pred_df.y_preds - pred_df.y_true
+    pred_df["abs_residuals"] = pred_df.residuals.abs()
+    pred_df = pred_df.sort_values("abs_residuals", ascending=True)
+
+    return pred_df
