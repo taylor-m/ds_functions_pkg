@@ -11,6 +11,9 @@ from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
+from sklearn.metrics import mean_absolute_error
+from statsmodels.tools.eval_measures import mse, rmse
+from sklearn.linear_model import RidgeCV, LassoCV, ElasticNetCV
 
 
 # =======================================================================
@@ -174,3 +177,67 @@ def predictions_df(X_test, y_test, y_preds):
     )
 
     return pred_df, fig
+
+# =======================================================================
+# REGRESSION MODEL REGULARIZATION CHECK FUNCTION
+# =======================================================================
+
+def model_cv_df(model_cv, X_train, X_test, y_train, y_test):
+
+    # We are making predictions here
+    y_preds_test = model_cv.predict(X_test)
+
+    print("\t-----TRAIN SET-----")
+    print("\tBest alpha: {}".format(model_cv.alpha_))
+    print("\tR-squared: {}\n".format(model_cv.score(X_train, y_train)))
+    print("\t-----TEST SET-----")
+    print("\tR-squared: {}".format(model_cv.score(X_test, y_test)))
+    print("\tMean absolute error: {}".format(mean_absolute_error(y_test, y_preds_test)))
+    print("\tMean squared error: {}".format(mse(y_test, y_preds_test)))
+    print("\tRoot mean squared error: {}".format(rmse(y_test, y_preds_test)))
+    print(
+        "\tMean absolute percentage error: {}".format(
+            np.mean(np.abs((y_test - y_preds_test) / y_test)) * 100
+        )
+    )
+
+
+def model_cv_stats(X, y, test_size, random_state, alphas, cv):
+
+    warnings.filterwarnings("ignore")
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=test_size, random_state=random_state
+    )
+    # MODEL OBJECT & FIT
+    ols_model = LinearRegression()
+    ols_model.fit(X_train, y_train)
+
+    # MODEL TEST PREDICTIONS
+    y_preds_test = ols_model.predict(X_test)
+
+    print("----------------------------------------------------------------")
+    print(ols_model)
+    print("----------------------------------------------------------------")
+    print("\t-----TRAIN SET-----")
+    print("\tR-squared: {}\n".format(ols_model.score(X_train, y_train)))
+    print("\t-----TEST SET-----")
+    print("\tR-squared: {}".format(ols_model.score(X_test, y_test)))
+    print("\tMean absolute error: {}".format(mean_absolute_error(y_test, y_preds_test)))
+    print("\tMean squared error: {}".format(mse(y_test, y_preds_test)))
+    print("\tRoot mean squared error: {}".format(rmse(y_test, y_preds_test)))
+    print(
+        "\tMean absolute percentage error: {}\n".format(
+            np.mean(np.abs((y_test - y_preds_test) / y_test)) * 100
+        )
+    )
+
+    # regression
+    for model in [RidgeCV, LassoCV, ElasticNetCV]:
+        print("----------------------------------------------------------------")
+        print(model)
+        print("----------------------------------------------------------------")
+        model_cv = model(alphas=alphas, cv=cv)
+        model_cv.fit(X_train, y_train)
+
+        model_cv_df(model_cv, X_train, X_test, y_train, y_test)
+        print("\n")
