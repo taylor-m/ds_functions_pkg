@@ -247,6 +247,7 @@ def model_cv_stats(X, y, test_size, random_state, alphas, cv):
 
     # create df for model results
     cv_mapping = {
+        "stat" : ["best alpha", "train R^2", "test R^2", "MAE", "MSE", "RMSE", "MAPE"],
         ols_model: [
             0,
             ols_model.score(X_train, y_train),
@@ -270,8 +271,7 @@ def model_cv_stats(X, y, test_size, random_state, alphas, cv):
         model_cv_df(model_cv, X_train, X_test, y_train, y_test, cv_mapping, model_name)
         print("\n")
 
-    cv_df = pd.DataFrame.from_dict(
-        cv_mapping,
-    )
+    cv_df = pd.DataFrame.from_dict(cv_mapping)
+    cv_df = cv_df.set_index("stat").T
 
     return cv_df
