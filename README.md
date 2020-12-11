@@ -4,6 +4,12 @@
 
 ## my_functions_pkg.supervised_regression.
 
+> ### predictions_df
+>>(X_test, y_test, y_preds)
+* returns predictions df and plotly express fig object
+* data frame = X_test.copy() + y_true + y_preds + residuals + abs_residuals
+* descending order by abs_residuals to view highest model mistakes made & index
+
 > ### plot_sced_test 
 >>(df, target, features)
 * checks homoscedasticity assumption with plots
