@@ -182,11 +182,15 @@ def predictions_df(X_test, y_test, y_preds):
 # REGRESSION MODEL REGULARIZATION CHECK FUNCTION
 # =======================================================================
 
-def model_cv_df(model_cv, X_train, X_test, y_train, y_test):
+def model_cv_df(model_cv, X_train, X_test, y_train, y_test, cv_mapping, model_name):
+
+    from sklearn.metrics import mean_absolute_error
+    import numpy as np
+    from statsmodels.tools.eval_measures import mse, rmse
+    from sklearn.linear_model import RidgeCV, LassoCV, ElasticNetCV
 
     # We are making predictions here
     y_preds_test = model_cv.predict(X_test)
-
     print("\t-----TRAIN SET-----")
     print("\tBest alpha: {}".format(model_cv.alpha_))
     print("\tR-squared: {}\n".format(model_cv.score(X_train, y_train)))
@@ -201,20 +205,30 @@ def model_cv_df(model_cv, X_train, X_test, y_train, y_test):
         )
     )
 
+    model_vals = [
+        model_cv.alpha_,
+        model_cv.score(X_train, y_train),
+        model_cv.score(X_test, y_test),
+        mean_absolute_error(y_test, y_preds_test),
+        mse(y_test, y_preds_test),
+        rmse(y_test, y_preds_test),
+        np.mean(np.abs((y_test - y_preds_test) / y_test)) * 100,
+    ]
+
+    cv_mapping[model_name] = model_vals
+
 
 def model_cv_stats(X, y, test_size, random_state, alphas, cv):
+    import warnings
 
     warnings.filterwarnings("ignore")
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=test_size, random_state=random_state
     )
-    # MODEL OBJECT & FIT
     ols_model = LinearRegression()
     ols_model.fit(X_train, y_train)
 
-    # MODEL TEST PREDICTIONS
     y_preds_test = ols_model.predict(X_test)
-
     print("----------------------------------------------------------------")
     print(ols_model)
     print("----------------------------------------------------------------")
@@ -231,13 +245,33 @@ def model_cv_stats(X, y, test_size, random_state, alphas, cv):
         )
     )
 
+    # create df for model results
+    cv_mapping = {
+        ols_model: [
+            0,
+            ols_model.score(X_train, y_train),
+            ols_model.score(X_test, y_test),
+            mean_absolute_error(y_test, y_preds_test),
+            mse(y_test, y_preds_test),
+            rmse(y_test, y_preds_test),
+            np.mean(np.abs((y_test - y_preds_test) / y_test)) * 100,
+        ]
+    }
+
     # regression
     for model in [RidgeCV, LassoCV, ElasticNetCV]:
+        model_name = str(model).split(".")[-1].split("'")[0]
         print("----------------------------------------------------------------")
-        print(model)
+        print(model_name)
         print("----------------------------------------------------------------")
         model_cv = model(alphas=alphas, cv=cv)
         model_cv.fit(X_train, y_train)
 
-        model_cv_df(model_cv, X_train, X_test, y_train, y_test)
+        model_cv_df(model_cv, X_train, X_test, y_train, y_test, cv_mapping, model_name)
         print("\n")
+
+    cv_df = pd.DataFrame.from_dict(
+        cv_mapping,
+    )
+
+    return cv_df
