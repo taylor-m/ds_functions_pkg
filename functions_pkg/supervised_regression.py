@@ -13,7 +13,7 @@ import seaborn as sns
 import plotly.express as px
 from sklearn.metrics import mean_absolute_error
 from statsmodels.tools.eval_measures import mse, rmse
-from sklearn.linear_model import RidgeCV, LassoCV, ElasticNetCV
+from sklearn.linear_model import RidgeCV, LassoCV, ElasticNetCV, LinearRegression
 
 
 # =======================================================================
