@@ -1,8 +1,15 @@
 # ds_functions_package
  package for storing useful data science functions
 
+> pip install git+https://github.com/taylor-m/ds_functions_pkg
 
 ## my_functions_pkg.supervised_regression.
+
+> ### model_cv_stats
+>> (X, y, test_size, random_state, alphas, cv)
+* OLS, RidgeCV, LassoCV, ElasticNetCV
+* prints: best alpha, train R^2, test R^2, MAE, MSE, RMSE, MAPE
+* returns: df of the cv stats
 
 > ### predictions_df
 >>(X_test, y_test, y_preds)

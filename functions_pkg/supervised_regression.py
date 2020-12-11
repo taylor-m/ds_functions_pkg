@@ -219,8 +219,21 @@ def model_cv_df(model_cv, X_train, X_test, y_train, y_test, cv_mapping, model_na
 
 
 def model_cv_stats(X, y, test_size, random_state, alphas, cv):
-    import warnings
+    '''
+    Utility function for running OLS Linear regression, CV Ridge regression,
+    CV LASSO regression, and CV ElasticNet regressions on X and y data sets.
+    The best alpha, train R^2, test R^2, mean absolute error, mean standard
+    error, root mean squared error, and mean absolute percent error are
+    printed for each model and a df of the stats is returned.
 
+    :param X: feature var dataframe
+    :param y: target var dataframe
+    :param test_size: test size to be used in train_test_split
+    :param random_state: random_state to pass into train_test_split function
+    :param alphas: a list of alpha values to use in hyperparameter optimization
+    :param cv: number of folds in cross-validation
+    :return cv_df: dataframe containing all model test stats
+    '''
     warnings.filterwarnings("ignore")
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=test_size, random_state=random_state
