@@ -71,8 +71,8 @@ def plot_sced_test(df, target, features):
         plt.show()
 
 
-# =======================================================================GET
-# TOP CORRELATIONS VS TARGET VAR & PLOT
+# =======================================================================
+# GET TOP CORRELATIONS VS TARGET VAR & PLOT
 # (data exploration)
 # =======================================================================
 def top_corrs(df, column, n=10):
@@ -95,9 +95,9 @@ def plot_top_corrs(df, column, n=10):
     plt.show()
 
 
-# =======================================================================,
+# =======================================================================
 # TUKEY'S METHOD - OUTLIERS (EDA)
-# =======================================================================,
+# =======================================================================
 
 def tukey_outliers(df, var):
     """
@@ -106,7 +106,7 @@ def tukey_outliers(df, var):
     give `75` and `25` as parameters, which corresponds
     to the third and the first quartiles.
     """
-    q75, q25 = np.percentile(df['Video views'], [75, 25])
+    q75, q25 = np.percentile(df[var], [75, 25])
     iqr = q75 - q25
 
     for threshold in np.arange(1, 5, 0.5):

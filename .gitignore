@@ -1,4 +1,6 @@
 .idea/
+Untitled.ipynb
+release_pipeline.sh
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
