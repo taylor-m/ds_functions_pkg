@@ -1,7 +1,4 @@
-# =======================================================================
-# MULTICOLLINEARITY VIF FUNCTION
-# (regression model assumptions test)
-# =======================================================================
+
 import numpy as np
 import pandas as pd
 import warnings
@@ -218,7 +215,7 @@ def model_cv_df(model_cv, X_train, X_test, y_train, y_test, cv_mapping, model_na
     cv_mapping[model_name] = model_vals
 
 
-def model_cv_stats(X, y, test_size, random_state, alphas, cv):
+def lr_cv_stats(X, y, test_size, random_state, alphas, cv):
     '''
     Utility function for running OLS Linear regression, CV Ridge regression,
     CV LASSO regression, and CV ElasticNet regressions on X and y data sets.
@@ -288,3 +285,25 @@ def model_cv_stats(X, y, test_size, random_state, alphas, cv):
     cv_df = cv_df.set_index("stat").T
 
     return cv_df
+
+# =======================================================================
+# GENERAL REGRESSION MODEL STATS DF
+# =======================================================================
+
+def regression_stats(model):
+    y_preds_test = model.predict(X_test)
+    # create df for model results
+    model_vals = [
+        model.score(X_train, y_train),
+        model.score(X_test, y_test),
+        mean_absolute_error(y_test, y_preds_test),
+        mse(y_test, y_preds_test),
+        rmse(y_test, y_preds_test),
+        np.mean(np.abs((y_test - y_preds_test) / y_test)) * 100,
+    ]
+    mapping = {
+        "stat": ["train R^2", "test R^2", "MAE", "MSE", "RMSE", "MAPE"],
+        "model": model_vals,
+    }
+    stats_df = pd.DataFrame.from_dict(mapping)
+    return stats_df
